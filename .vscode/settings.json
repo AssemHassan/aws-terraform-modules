@@ -1,0 +1,3 @@
+{ 
+    "terminal.integrated.env.windows": {"AWS_PROFILE": "assem-itworx"} 
+}
