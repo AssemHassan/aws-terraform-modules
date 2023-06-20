@@ -27,3 +27,7 @@ variable "container_host_port" {
 variable "container_image" {
   type = string
 } 
+
+variable "container_name" {
+  type = string
+}

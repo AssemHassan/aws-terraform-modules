@@ -5,6 +5,10 @@ resource "aws_ecs_cluster" "main" {
 resource "aws_ecs_task_definition" "service-taskDefinition" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
+  runtime_platform {
+    cpu_architecture = "X86_64"  
+    operating_system_family = "LINUX"
+  }
   family = "${var.namespace}-${var.servicename}-taskDefinition"
   cpu                      = 256
   memory                   = 512
@@ -12,15 +16,16 @@ resource "aws_ecs_task_definition" "service-taskDefinition" {
   task_role_arn            = var.ecs_task_role_arn
   container_definitions = jsonencode(
       [
-          {
-   name        = "${var.namespace}-${var.servicename}-container"
-   image       = "${var.container_image}:latest"
-   essential   = true
-   portMappings = [{
-     protocol      = "tcp"
-     containerPort = var.container_port
-     hostPort      = var.container_host_port
-   }] 
-  }]
+        {
+          name        = "${var.container_name}"
+          image       = "${var.container_image}"
+          essential   = true
+          portMappings = [{
+            protocol      = "tcp"
+            containerPort = var.container_port
+            hostPort      = var.container_host_port
+          }] 
+        }
+      ]
   )
 }

@@ -33,7 +33,9 @@ module "fg-cluster" {
    container_port = 80 #internal
    ecs_task_execution_role_arn = module.discovery.container_role.arn
    ecs_task_role_arn = module.discovery.container_role.arn
-   container_image = "public.ecr.aws/nginx/nginx:1.24-alpine-slim"
+   container_image = "public.ecr.aws/ubuntu/nginx:latest"
+   container_name = "nginx" #"${var.app.app_name}-service"
+
 }
 
 locals {
@@ -78,10 +80,11 @@ module "elb-fargate-service" {
   vpc_id = module.discovery.vpc_id 
   health_check_path = "/"
   cognito_user_pool_arn = module.cognito-user-pool.user_pool.arn
-  cognito_user_pool_domain = module.cognito-user-pool.user_pool.domain
+  cognito_user_pool_domain = module.cognito-user-pool.user_pool_domain.domain
   cognito_user_pool_client_id = module.cognito-appclient.userpool_clients.dev.id
 
   cert_arn = module.self-signed-cert-non-prod.cert_arn
+  container_name = "nginx" #"${var.app.app_name}-service"
 }
 
 # module "batch-jobs" {

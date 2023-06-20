@@ -78,21 +78,19 @@ resource "aws_ecs_service" "runtime_service" {
  name                               = "${var.namespace}-ecs-${var.servicename}"
  cluster                            = var.ecs_cluster.id
  task_definition                    = var.service-taskDefinition.arn
- desired_count                      = 0
- deployment_minimum_healthy_percent = 50
- deployment_maximum_percent         = 200
+ desired_count                      = 1
  launch_type                        = "FARGATE"
  scheduling_strategy                = "REPLICA"
  
  network_configuration {
    security_groups  = var.security_groups.*.id
    subnets          = var.container_subnets 
-   assign_public_ip = false
+   assign_public_ip = true # this is needed to be able to pull public images from ECR. Not needed if we have NAT gateway setup
  }
  
  load_balancer {
    target_group_arn = aws_alb_target_group.service-runtime.arn
-   container_name   = "${var.namespace}-${var.servicename}-container"
+   container_name   = "${var.container_name}"
    container_port   = var.container_port
  }
  

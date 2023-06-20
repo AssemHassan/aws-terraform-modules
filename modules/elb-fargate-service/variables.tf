@@ -48,3 +48,7 @@ variable "cognito_user_pool_client_id" {
 variable "cognito_user_pool_domain" {
   type = string
 }
+
+variable "container_name" {
+  type = string
+}

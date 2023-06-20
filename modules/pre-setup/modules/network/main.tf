@@ -17,7 +17,10 @@ resource "aws_internet_gateway" "igw" {
 
 resource "aws_route_table" "routeTable" {
   vpc_id = "${aws_vpc.vpc.id}"
-
+    route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.igw.id}"
+  }
   tags = {
     Name = "RouteTable-${var.name}"
   }
@@ -33,11 +36,12 @@ resource "aws_subnet" "subnets" {
   }
 }
  
-resource "aws_route_table_association" "rt_associate" {
+resource "aws_route_table_association" "rt_associate_subnets" {
   count          = length(aws_subnet.subnets)
   subnet_id      = aws_subnet.subnets[count.index].id
   route_table_id = aws_route_table.routeTable.id
 }
+ 
 
 resource "aws_security_group" "core_sg" {
     name = "SG-${var.name}-CUSTOM"
